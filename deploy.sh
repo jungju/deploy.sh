@@ -48,7 +48,7 @@ new_third_number=$((third_number + 1))
 # stage를 포함하려면 아래 코드를 사용(예 1.0.0-beta)
 # new_version=$(echo "$last_tag" | sed "s/\(.*\)\.\([0-9]*\)\(-.*\)/\1.$new_third_number\3/")
 new_version=$(echo "$last_tag" | sed "s/\(.*\)\.\([0-9]*\)/\1.$new_third_number/")
-
+echo $new_version
 if [ ! -z "$new_version" ]; then
     new_version='v0.0.1'
 fi
