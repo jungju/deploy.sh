@@ -43,7 +43,6 @@ new_version='v0.0.1'
 # stage를 포함하려면 아래 코드를 사용(예 1.0.0-beta)
 #last_tag=$(git tag --list | grep "$STAGE" | sort -rV | head -n 1)
 last_tag=$(git tag --list | sort -rV | head -n 1)
-echo $last_tag
 if [ ! -z "$last_tag" ]; then
     third_number=$(echo "$last_tag" | grep -oP '\d+\.\d+.\K\d+')
     new_third_number=$((third_number + 1))
