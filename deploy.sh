@@ -49,7 +49,7 @@ new_third_number=$((third_number + 1))
 # new_version=$(echo "$last_tag" | sed "s/\(.*\)\.\([0-9]*\)\(-.*\)/\1.$new_third_number\3/")
 new_version=$(echo "$last_tag" | sed "s/\(.*\)\.\([0-9]*\)/\1.$new_third_number/")
 
-if [ -z "$new_version" ]; then
+if [ ! -z "$new_version" ]; then
     new_version='v0.0.1'
 fi
 
