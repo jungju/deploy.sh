@@ -27,3 +27,7 @@ Once the environment variables are set, you can run the deploy.sh script:
 ```
 
 The script will check if the local source is identical to the GitHub main branch. If they are identical, it will update the version in the latest tag, create a new Git tag and GitHub release, build the Docker image, and deploy it to the Kubernetes cluster.
+
+## TODO
+- [ ] Notification
+- [ ] Major Version Up Features
