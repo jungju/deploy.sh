@@ -9,16 +9,13 @@ To deploy this project, use the `deploy.sh` script. This script will create a Gi
 Before running the script, make sure to set the following environment variables:
 
 ```bash
-DOCKER_IMAGE="/jungju/go"
+DOCKER_IMAGE=""
 KUBE_NAMESPACE=""
 KUBE_DEPLOYMENT_NAME=""
 KUBE_CONTAINER_NAME=""
 KUBE_CONFIG_FILENAME=""
-GIT_MAIN_BRANCH="main"
 GIT_TAG_MESSAGE=""
 GITHUB_TOKEN=""
-GITHUB_REPO_OWNER=""
-GITHUB_REPO_NAME=""
 ```
 
 Replace the values with the appropriate settings for your project and environment.
