@@ -57,18 +57,19 @@ echo $new_version
 git tag -a "$new_version" -m "$GIT_TAG_MESSAGE"
 git push origin "$new_version"
 
-json_data=$(printf '{
-  "tag_name": "%s",
-  "name": "%s",
-  "body": "%s",
-  "draft": false,
-  "prerelease": false
-}' "$new_version" "$new_version" "$GIT_TAG_MESSAGE")
-curl -XPOST -H "Authorization: token $GITHUB_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d "$json_data" \
-  "https://api.github.com/repos/$repo_owner/$repo_name/releases"
-
+if [ ! -z "$GITHUB_TOKEN" ]; then
+    json_data=$(printf '{
+    "tag_name": "%s",
+    "name": "%s",
+    "body": "%s",
+    "draft": false,
+    "prerelease": false
+    }' "$new_version" "$new_version" "$GIT_TAG_MESSAGE")
+    curl -XPOST -H "Authorization: token $GITHUB_TOKEN" \
+    -H "Content-Type: application/json" \
+    -d "$json_data" \
+    "https://api.github.com/repos/$repo_owner/$repo_name/releases"
+fi
 ###### Git, GitHub에 태그 완료. 빌드 진행합니다.
 #docker build -t $DOCKER_IMAEG:$new_tag .
 #docker push $DOCKER_IMAEG:$new_tag
