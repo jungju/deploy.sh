@@ -39,19 +39,19 @@ fi
 
 ###### 코드 점검 완료! 현재 코드는 배포 가능한 코드 입니다.
 
+new_version='v0.0.1'
 # stage를 포함하려면 아래 코드를 사용(예 1.0.0-beta)
 #last_tag=$(git tag --list | grep "$STAGE" | sort -rV | head -n 1)
 last_tag=$(git tag --list | sort -rV | head -n 1)
-third_number=$(echo "$last_tag" | grep -oP '\d+\.\d+.\K\d+')
-new_third_number=$((third_number + 1))
-
-# stage를 포함하려면 아래 코드를 사용(예 1.0.0-beta)
-# new_version=$(echo "$last_tag" | sed "s/\(.*\)\.\([0-9]*\)\(-.*\)/\1.$new_third_number\3/")
-new_version=$(echo "$last_tag" | sed "s/\(.*\)\.\([0-9]*\)/\1.$new_third_number/")
-echo $new_version
 if [ ! -z "$new_version" ]; then
-    new_version='v0.0.1'
+    third_number=$(echo "$last_tag" | grep -oP '\d+\.\d+.\K\d+')
+    new_third_number=$((third_number + 1))
+
+    # stage를 포함하려면 아래 코드를 사용(예 1.0.0-beta)
+    # new_version=$(echo "$last_tag" | sed "s/\(.*\)\.\([0-9]*\)\(-.*\)/\1.$new_third_number\3/")
+    new_version=$(echo "$last_tag" | sed "s/\(.*\)\.\([0-9]*\)/\1.$new_third_number/")
 fi
+echo $new_version
 
 ###### Git 태그 추가
 git tag -a "$new_version" -m "$GIT_TAG_MESSAGE"
