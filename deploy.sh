@@ -1,7 +1,14 @@
 #!/bin/bash
 set -e
 
-STAGE=""
+function deploy_k8s {
+    ###### 빌드 완료! 배포 진행합니다.
+    echo "Kubernetes 배포 시작..."
+    #kubectl set image deployment/$KUBE_DEPLOYMENT_NAME $KUBE_CONTAINER_NAME=$DOCKER_IMAEG:$new_tag --kubeconfig $KUBE_CONFIG_FILENAME
+    #kubectl set env deployment/$KUBE_DEPLOYMENT_NAME -c $KUBE_CONTAINER_NAME APP_VERSION=$new_tag --kubeconfig $KUBE_CONFIG_FILENAME
+    echo "Kubernetes 배포 완료."
+}
+
 DOCKER_IMAEG=""
 
 KUBE_NAMESPACE=""
@@ -13,6 +20,8 @@ GIT_MAIN_BRANCH="main"
 GIT_TAG_MESSAGE=""
 
 git_remote_url=$(git remote get-url origin)
+
+# https protocol 일 경우
 #repo_info=$(echo "$git_remote_url" | sed -nE 's#https://github.com/([^/]*)/([^/]*)\.git#\1/\2#p')
 repo_info=$(echo "$git_remote_url" | sed -nE 's#git@github.com:([^/]*)/([^/]*)\.git#\1/\2#p')
 repo_owner=$(echo "$repo_info" | cut -d '/' -f 1)
@@ -39,16 +48,16 @@ fi
 
 ###### 코드 점검 완료! 현재 코드는 배포 가능한 코드 입니다.
 
-new_version='v0.0.1'
-# stage를 포함하려면 아래 코드를 사용(예 1.0.0-beta)
-#last_tag=$(git tag --list | grep "$STAGE" | sort -rV | head -n 1)
 last_tag=$(git tag --list | sort -rV | head -n 1)
+if [ ! -z "$ONLY_DEPLOY" ]; then
+    deploy_k8s
+    exit 0
+fi 
+
+new_version='v0.0.1'
 if [ ! -z "$last_tag" ]; then
     third_number=$(echo "$last_tag" | grep -oP '\d+\.\d+.\K\d+')
     new_third_number=$((third_number + 1))
-
-    # stage를 포함하려면 아래 코드를 사용(예 1.0.0-beta)
-    # new_version=$(echo "$last_tag" | sed "s/\(.*\)\.\([0-9]*\)\(-.*\)/\1.$new_third_number\3/")
     new_version=$(echo "$last_tag" | sed "s/\(.*\)\.\([0-9]*\)/\1.$new_third_number/")
 fi
 echo $new_version
@@ -74,9 +83,6 @@ fi
 #docker build -t $DOCKER_IMAEG:$new_tag .
 #docker push $DOCKER_IMAEG:$new_tag
 
-###### 빌드 완료! 배포 진행합니다.
-#kubectl set image deployment/$KUBE_DEPLOYMENT_NAME $KUBE_CONTAINER_NAME=$DOCKER_IMAEG:$new_tag --kubeconfig $KUBE_CONFIG_FILENAME
-#kubectl set env deployment/$KUBE_DEPLOYMENT_NAME -c $KUBE_CONTAINER_NAME APP_VERSION=$new_tag --kubeconfig $KUBE_CONFIG_FILENAME
+deploy_k8s
 
 echo "완료"
-exit 0
