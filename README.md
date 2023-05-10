@@ -29,7 +29,6 @@ kubectl set image deployment/app container-0=repo/app:v1.0.1 # deploy the app
 ```
 
 ## Input Description
-- STAGE: Can include alpha, beta, etc. in the version (v1.0.0-beta)
 - DOCKER_IMAGE: Docker Image address
 - KUBE_NAMESPACE: Kubernetes Namespace
 - KUBE_DEPLOYMENT_NAME: Kubernetes deployment name
@@ -37,6 +36,7 @@ kubectl set image deployment/app container-0=repo/app:v1.0.1 # deploy the app
 - KUBE_CONFIG_FILENAME: kubeconfig file location
 - GIT_MAIN_BRANCH: master or main
 - GIT_TAG_MESSAGE: Tag and Release message
+- VERSION_TARGET: patch, minor, major
 
 ## TODO
 - [ ] Notification feature

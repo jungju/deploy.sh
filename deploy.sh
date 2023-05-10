@@ -13,6 +13,7 @@ function deploy_k8s {
 
 
 GIT_MAIN_BRANCH=${GIT_MAIN_BRANCH:-main}
+VERSION_TARGET=${VERSION_TARGET:-patch}
 
 # 필요 환경 변수
 # DOCKER_IMAEG
@@ -20,6 +21,9 @@ GIT_MAIN_BRANCH=${GIT_MAIN_BRANCH:-main}
 # KUBE_DEPLOYMENT_NAME
 # KUBE_CONTAINER_NAME
 # KUBE_CONFIG_FILENAME
+# GIT_MAIN_BRANCH
+# GIT_TAG_MESSAGE
+# VERSION_TARGET
 
 last_commit=$(git log -1 --pretty=format:%s)
 GIT_TAG_MESSAGE=${GIT_TAG_MESSAGE:-$last_commit}
@@ -58,15 +62,43 @@ if [ ! -z "$ONLY_DEPLOY" ]; then
     deploy_k8s
     exit 0
 fi 
-
+last_tag='v13.23.1'
 new_version='v0.0.1'
 if [ ! -z "$last_tag" ]; then
-    third_number=$(echo "$last_tag" | grep -oP '\d+\.\d+.\K\d+')
-    new_third_number=$((third_number + 1))
-    new_version=$(echo "$last_tag" | sed "s/\(.*\)\.\([0-9]*\)/\1.$new_third_number/")
-fi
-echo $new_version
+    # 문자열을 '.' 기준으로 분리하여 배열에 저장
+    only_version="${last_tag#v}"
+    IFS='.' read -r -a array <<< "$only_version"
 
+    if [ "$VERSION_TARGET" = "patch" ]; then
+        # patch 버전 증가
+        # ...
+        array[2]=$((${array[2]} + 1))
+    elif [ "$VERSION_TARGET" = "minor" ]; then
+        # minor 버전 증가
+        # ...
+        array[1]=$((${array[1]} + 1))
+        array[2]=0
+    elif [ "$VERSION_TARGET" = "major" ]; then
+        # major 버전 증가
+        # ...
+        array[0]=$((${array[0]} + 1))
+        array[1]=0
+        array[2]=0
+    else
+        # 잘못된 값이 들어온 경우
+        echo "Invalid version target."
+        exit 1
+    fi
+
+    # 새로운 버전 문자열 생성
+    new_version="v${array[0]}.${array[1]}.${array[2]}"
+
+    # third_number=$(echo "$last_tag" | grep -oP '\d+\.\d+.\K\d+')
+    # new_third_number=$((third_number + 1))
+    # new_version=$(echo "$last_tag" | sed "s/\(.*\)\.\([0-9]*\)/\1.$new_third_number/")
+fi
+echo "$last_tag -> $new_version"
+exit 0
 ###### Git 태그 추가
 git tag -a "$new_version" -m "$GIT_TAG_MESSAGE"
 git push origin "$new_version"

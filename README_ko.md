@@ -29,15 +29,15 @@ kubectl set image deployment/app container-0=repo/app:v1.0.1 # 앱배포
 ```
 
 ## 입력 설명
-- STAGE: alpha, beta 등 Version 포함 가능합니다. (v1.0.0-beta)
 - DOCKER_IMAEG: Docker Image 주소
 - KUBE_NAMESPACE: Kubenetes Namespace
 - KUBE_DEPLOYMENT_NAME: Kubenetes deployment이름
 - KUBE_CONTAINER_NAME: Kubenetes deployment의 container이름
 - KUBE_CONFIG_FILENAME: kubeconfig 파일위치
 - GIT_MAIN_BRANCH: master 또는 main
-- GIT_TAG_MESSAGE: Tag 및 Release 메세지
+- GIT_TAG_MESSAGE: Tag 및 Release 메세지. 기본 마지막 commit Message
+- VERSION_TARGET: 올릴 버전(patch, minor, major)
 
 ## TODO
 - [ ] 알림 기능
-- [ ] Major 버전 업데이트 
+- [v] Major 버전 업데이트 
