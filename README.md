@@ -40,4 +40,4 @@ kubectl set image deployment/app container-0=repo/app:v1.0.1 # deploy the app
 
 ## TODO
 - [ ] Notification feature
-- [ ] Major version update
+- [v] Major version update
