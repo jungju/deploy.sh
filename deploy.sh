@@ -22,7 +22,7 @@ GIT_MAIN_BRANCH=${GIT_MAIN_BRANCH:-main}
 # KUBE_CONFIG_FILENAME
 
 last_commit=$(git log -1 --pretty=format:%s)
-GIT_TAG_MESSAGE=${GIT_TAG_MESSAGE:-last_commit}
+GIT_TAG_MESSAGE=${GIT_TAG_MESSAGE:-$last_commit}
 
 git_remote_url=$(git remote get-url origin)
 
