@@ -3,21 +3,26 @@ set -e
 
 function deploy_k8s {
     ###### 빌드 완료! 배포 진행합니다.
-    echo "Kubernetes 배포 시작..."
-    #kubectl set image deployment/$KUBE_DEPLOYMENT_NAME $KUBE_CONTAINER_NAME=$DOCKER_IMAEG:$new_tag --kubeconfig $KUBE_CONFIG_FILENAME
-    #kubectl set env deployment/$KUBE_DEPLOYMENT_NAME -c $KUBE_CONTAINER_NAME APP_VERSION=$new_tag --kubeconfig $KUBE_CONFIG_FILENAME
-    echo "Kubernetes 배포 완료."
+    if [ ! -z "$KUBE_CONFIG_FILENAME" ]; then
+        echo "Kubernetes 배포 시작..."
+        kubectl set image deployment/$KUBE_DEPLOYMENT_NAME $KUBE_CONTAINER_NAME=$DOCKER_IMAEG:$new_tag --kubeconfig $KUBE_CONFIG_FILENAME
+        #kubectl set env deployment/$KUBE_DEPLOYMENT_NAME -c $KUBE_CONTAINER_NAME APP_VERSION=$new_tag --kubeconfig $KUBE_CONFIG_FILENAME
+        echo "Kubernetes 배포 완료."
+    fi
 }
 
-DOCKER_IMAEG=""
 
-KUBE_NAMESPACE=""
-KUBE_DEPLOYMENT_NAME=""
-KUBE_CONTAINER_NAME=""
-KUBE_CONFIG_FILENAME=""
+GIT_MAIN_BRANCH=${GIT_MAIN_BRANCH:-main}
 
-GIT_MAIN_BRANCH="main"
-GIT_TAG_MESSAGE=""
+# 필요 환경 변수
+# DOCKER_IMAEG
+# KUBE_NAMESPACE
+# KUBE_DEPLOYMENT_NAME
+# KUBE_CONTAINER_NAME
+# KUBE_CONFIG_FILENAME
+
+last_commit=$(git log -1 --pretty=format:%s)
+GIT_TAG_MESSAGE=${GIT_TAG_MESSAGE:-last_commit}
 
 git_remote_url=$(git remote get-url origin)
 
@@ -79,9 +84,12 @@ if [ ! -z "$GITHUB_TOKEN" ]; then
     -d "$json_data" \
     "https://api.github.com/repos/$repo_owner/$repo_name/releases"
 fi
+
 ###### Git, GitHub에 태그 완료. 빌드 진행합니다.
-#docker build -t $DOCKER_IMAEG:$new_tag .
-#docker push $DOCKER_IMAEG:$new_tag
+if [ ! -z "$DOCKER_IMAEG" ]; then
+    docker build -t $DOCKER_IMAEG:$new_tag .
+    docker push $DOCKER_IMAEG:$new_tag
+fi
 
 deploy_k8s
 
