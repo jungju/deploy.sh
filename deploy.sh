@@ -62,7 +62,7 @@ if [ ! -z "$ONLY_DEPLOY" ]; then
     deploy_k8s
     exit 0
 fi 
-last_tag='v13.23.1'
+
 new_version='v0.0.1'
 if [ ! -z "$last_tag" ]; then
     # 문자열을 '.' 기준으로 분리하여 배열에 저장
@@ -92,13 +92,9 @@ if [ ! -z "$last_tag" ]; then
 
     # 새로운 버전 문자열 생성
     new_version="v${array[0]}.${array[1]}.${array[2]}"
-
-    # third_number=$(echo "$last_tag" | grep -oP '\d+\.\d+.\K\d+')
-    # new_third_number=$((third_number + 1))
-    # new_version=$(echo "$last_tag" | sed "s/\(.*\)\.\([0-9]*\)/\1.$new_third_number/")
 fi
 echo "$last_tag -> $new_version"
-exit 0
+
 ###### Git 태그 추가
 git tag -a "$new_version" -m "$GIT_TAG_MESSAGE"
 git push origin "$new_version"
