@@ -38,6 +38,29 @@ kubectl set image deployment/app container-0=repo/app:v1.0.1 # deploy the app
 - GIT_TAG_MESSAGE: Tag and Release message
 - VERSION_TARGET: patch, minor, major
 
+## Reference to Makefile
+```
+# If the local git status is the same as the remote, update to the patch version and deploy.
+deploy:
+	./deploy.sh # 
+
+# If the local git status is the same as the remote, update to the major version and deploy.
+deploy-major:
+	VERSION_TARGET=major ./deploy.sh
+
+# If the local git status is the same as the remote, update to the minor version and deploy.
+deploy-minor:
+	VERSION_TARGET=minor ./deploy.sh
+
+# If the local git status is the same as the remote, deploy directly to K8s.
+deploy-only-k8s:
+	ONLY_DEPLOY=true ./deploy.sh
+
+# Ignore the local git status and update to the patch version and deploy.
+deploy-force:
+	FORCE_DEPLOY=true ./deploy.sh # Deploy without checking Git
+```
+
 ## TODO
 - [ ] Notification feature
 - [x] Major version update

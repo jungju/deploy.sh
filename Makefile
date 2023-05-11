@@ -8,6 +8,9 @@ deploy-all:
 	git push origin main
 	./deploy.sh
 
+deploy-force:
+	FORCE_DEPLOY=true ./deploy.sh
+
 deploy-major:
 	VERSION_TARGET=major ./deploy.sh
 

@@ -38,6 +38,30 @@ kubectl set image deployment/app container-0=repo/app:v1.0.1 # 앱배포
 - GIT_TAG_MESSAGE: Tag 및 Release 메세지. 기본 마지막 commit Message
 - VERSION_TARGET: 올릴 버전(patch, minor, major)
 
+
+## Makefile 참조
+```
+# 로컬 git 상태가 Remote의 동일한 상태이면 patch 버전으로 업데이트 해서 배포.
+deploy:
+	./deploy.sh # 
+
+# 로컬 git 상태가 Remote의 동일한 상태이면 major 버전으로 업데이트 해서 배포.
+deploy-major:
+	VERSION_TARGET=major ./deploy.sh
+
+# 로컬 git 상태가 Remote의 동일한 상태이면 minor 버전으로 업데이트 해서 배포.
+deploy-minor:
+	VERSION_TARGET=minor ./deploy.sh
+
+# 로컬 git 상태가 Remote의 동일한 상태이면 바로 K8s에 배포.
+deploy-only-k8s:
+	ONLY_DEPLOY=true ./deploy.sh
+
+# 로컬 git 상태를 무시하고 patch 버전으로 업데이트 해서 배포.
+deploy-force:
+	FORCE_DEPLOY=true ./deploy.sh # Git 체크 안하고 배포 하기
+```
+
 ## TODO
 - [ ] 알림 기능
 - [v] Major 버전 업데이트 
